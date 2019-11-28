@@ -1,0 +1,35 @@
+{
+    "name": "cirlmcescma/laravel-hashids",
+    "description": "Automatically hash the field with ID in the Eloquent model.",
+    "license": "MIT",
+    "type": "laravel-package",
+    "authors": [
+        {
+            "name": "Cirlmcesc Ma",
+            "email": "cirlmcesc_ma@163.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=7.2",
+        "hashids/hashids": "^4.0"
+    },
+    "autoload": {
+        "classmap": [
+            "src/Console"
+        ],
+        "psr-4": {
+            "Cirlmcesc\\LaravelHashids\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Cirlmcesc\\LaravelHashids\\LaravelHashidsServiceProvider"
+            ]
+        }
+    }
+}
