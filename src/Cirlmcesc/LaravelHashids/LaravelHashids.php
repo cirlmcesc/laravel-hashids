@@ -29,7 +29,7 @@ class LaravelHashids
      * @param Int $id
      * @return String
      */
-    public function encode(Int $id) : String
+    public function encode(Int $id): String
     {
         return $this->hashids->encode($id);
     }
@@ -41,7 +41,7 @@ class LaravelHashids
      * @param Int $default
      * @return Int
      */
-    public function decode(String $id, Int $default = 0) : Int
+    public function decode(String $id, Int $default = 0): Int
     {
         return (Int) $this->hashids->decode($id)[0] ?? ($default ?? $id);
     }

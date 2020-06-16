@@ -2,7 +2,6 @@
 
 namespace Cirlmcesc\LaravelHashids\Traits;
 
-use Closure;
 use Illuminate\Support\Str;
 
 trait Hashidsable
@@ -54,9 +53,9 @@ trait Hashidsable
      */
     private function encodeAttribute(String $field)
     {
-        $this->attributes[$field] = $this->attributes[$field] == NULL
-            ? NULL
-            : $this->hashids()->encode($this->$attributes[$field]);
+        $this->attributes[$field] = $this->attributes[$field] == null
+        ? null
+        : $this->hashids()->encode($this->$attributes[$field]);
     }
 
     /**
@@ -67,8 +66,7 @@ trait Hashidsable
      */
     private function decodeAttribute(String $field)
     {
-        $this->attributes[$field] = $this->hashids()->decode($this->attributes[$field])
-            ?? $this->attributes[$field];
+        $this->attributes[$field] = $this->hashids()->decode($this->attributes[$field]) ?? $this->attributes[$field];
 
         return $this;
     }
@@ -78,10 +76,10 @@ trait Hashidsable
      *
      * @return Bool
      */
-    private function hasProperlySetNeedHasdidFields() : Bool
+    private function hasProperlySetNeedHasdidFields(): Bool
     {
         return empty($this->needHashidFields) === false
-            && gettype($this->needHashidFields) === 'array';
+        && gettype($this->needHashidFields) === 'array';
     }
 
     /**
@@ -89,10 +87,10 @@ trait Hashidsable
      *
      * @return Bool
      */
-    private function hasProperlySetDoesntneedHasdidFields() : Bool
+    private function hasProperlySetDoesntneedHasdidFields(): Bool
     {
         return empty($this->doesntneedHashidFields) === false
-            && gettype($this->doesntneedHashidFields) === 'array';
+        && gettype($this->doesntneedHashidFields) === 'array';
     }
 
     /**
@@ -101,10 +99,10 @@ trait Hashidsable
      * @param String $field
      * @return Bool
      */
-    private function doesntneedHashidField(String $field) : Bool
+    private function doesntneedHashidField(String $field): Bool
     {
         return $this->hasProperlySetDoesntneedHasdIdFields()
-            && in_array($field, $this->doesntneedHashidFields);
+        && in_array($field, $this->doesntneedHashidFields);
     }
 
     /**
@@ -112,7 +110,7 @@ trait Hashidsable
      *
      * @return Array
      */
-    public function attributesToArray() : Array
+    public function attributesToArray(): array
     {
         $hashids = $this->hashids();
 
@@ -134,27 +132,27 @@ trait Hashidsable
                 // First, determine whether the field exists or not.
                 if (key_exists($field, $data)) {
                     $data[$field] = $data[$field] == null
-                        ? null
-                        : $hashids->encode((int)$data[$field]);
+                    ? null
+                    : $hashids->encode((int) $data[$field]);
                 }
             }
-        // If no field is set.
-        // Automatically hash all fields with ID fields.
+            // If no field is set.
+            // Automatically hash all fields with ID fields.
         } else {
             foreach ($data as $field => $value) {
                 // Determine whether the field contains an ID field
                 if (Str::contains($field, self::$_ID_STRING) == true
                     && $this->doesntneedHashidField($field) == false) {
                     $data[$field] = $value == null
-                        ? null
-                        : $hashids->encode((int)$value);
+                    ? null
+                    : $hashids->encode((int) $value);
                 }
             }
         }
 
         return $data;
     }
-    
+
     /**
      * resolveRouteBinding function
      *
@@ -171,7 +169,7 @@ trait Hashidsable
      *
      * @return Hashids
      */
-    public function hashids() : Hashids
+    public function hashids(): Hashids
     {
         if (empty(self::$_HASHIDS == true)) {
             self::$_HASHIDS = resolve(LaravelHashids::class);

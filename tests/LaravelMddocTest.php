@@ -2,7 +2,6 @@
 
 use Orchestra\Testbench\TestCase;
 
-
 class LaravelHashidsTest extends TestCase
 {
     /**
