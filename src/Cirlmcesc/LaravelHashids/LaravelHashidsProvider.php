@@ -2,6 +2,7 @@
 
 namespace Cirlmcesc\LaravelHashids;
 
+use Illuminate\Support\ServiceProvider;
 use Hashids\Hashids;
 
 class LaravelHashidsServiceProvider extends ServiceProvider
