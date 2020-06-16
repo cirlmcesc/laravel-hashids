@@ -21,7 +21,10 @@
     },
     "autoload": {
         "classmap": [
-            "src/Commands"
+            "src/Commands",
+            "src/Providers",
+            "src/Traits",
+            "src"
         ],
         "psr-4": {
             "Cirlmcesc\\LaravelHashids\\": "src/"

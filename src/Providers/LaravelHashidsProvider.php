@@ -1,6 +1,6 @@
 <?php
 
-namespace Cirlmcesc\LaravelHashids;
+namespace Cirlmcesc\LaravelHashids\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Hashids\Hashids;
