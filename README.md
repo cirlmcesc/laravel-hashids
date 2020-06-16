@@ -7,7 +7,9 @@ Do not explicitly display the ID of the data in the interface or URI. Use the Tr
 Install
 -------
 Install via composer
-```composer require cirlmcesc/laravel-hashids```
+```shell
+composer require cirlmcesc/laravel-hashids
+```
 
 Add Service Provider to `config/app.php` in `providers` section
 ```php
@@ -16,7 +18,9 @@ Cirlmcesc\LaravelMddoc\LaravelHashidsServiceProvider::class,
 
 **Configuration file** will be published to `config/`.
 The mode of operation can be customized by modifying parameters and attributes.
-```php artisan hashids:install```
+```shell
+php artisan hashids:install
+```
 
 Usage
 -----
@@ -68,6 +72,3 @@ function hashidsdecode(String $id): Int
 ```
 **Test command** can use encryption and decryption on the command line.
 ```php artisan hashids:test```
-
-Other
------
