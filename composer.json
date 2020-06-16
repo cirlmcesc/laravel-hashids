@@ -1,5 +1,5 @@
 {
-    "name": "cirlmcescma/laravel-hashids",
+    "name": "cirlmcesc/laravel-hashids",
     "description": "Automatically hash the field with ID in the Eloquent model.",
     "license": "MIT",
     "type": "laravel-package",
