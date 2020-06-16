@@ -11,7 +11,7 @@ if (!function_exists('hashids')) {
      */
     function hashids(): Hashids
     {
-        return resolve(Hashids::class);
+        return resolve(LaravelHashids::class);
     }
 }
 

@@ -49,12 +49,14 @@ class Foo extends Model
 ```php
 <?php
 
+use Cirlmcesc\LaravelHashids\LaravelHashids;
+
 /**
  * hashids function
  *
  * @return Hashids
  */
-function hashids(): Hashids
+function hashids(): LaravelHashids
 
 /**
  * hashidsencode function
