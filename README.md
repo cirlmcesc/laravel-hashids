@@ -1,61 +1,73 @@
-# Laravel markdown documentation
+# Laravel Hashids
 
 TL;DR
 -----
-Markdown documentation for Laravel.
-**Install with composer, create a route to `MddocController`**.
-Automatic analysis of documentation folders, read markdown file content rendering web page, Highest support two level classification.
-No public assets, automatic registration routing, UI based on [Antd Desgin Vue](https://github.com/vueComponent/ant-design-vue) .
-Inspired by star7th's [showdoc](https://github.com/star7th/showdoc) (run in ThinkPHP).
-
+Do not explicitly display the ID of the data in the interface or URI. Use the Trail on the Model to automatically encrypt the ID, and at the same time, it will correctly decrypt the instance of the class you want to inject into the route. It also provides quick methods to encrypt and decrypt the ID when you need. It provides some commands for testing. Inspired by [vinkla/laravel-hashids](https://github.com/vinkla/laravel-hashids).
 
 Install
 -------
 Install via composer
-```
-composer require cirlmcesc/laravel-mddoc
-```
+```composer require cirlmcesc/laravel-hashids```
 
 Add Service Provider to `config/app.php` in `providers` section
 ```php
-Cirlmcesc\LaravelMddoc\LaravelMddocServiceProvider::class,
+Cirlmcesc\LaravelMddoc\LaravelHashidsServiceProvider::class,
 ```
 
-Then run the following command to **publish the resource**.
 **Configuration file** will be published to `config/`.
 The mode of operation can be customized by modifying parameters and attributes.
-```
-php artisan mddoc:install
-```
-
+```php artisan hashids:install```
 
 Usage
 -----
-**Generating a template with a artisan command**.
-The markdown file will be placed under the `documentation/` folder under the root directory.
-You can also change the parameters in the configuration file to change the directory where the files are stored.
-```
-php artisan make:documentation filename
-```
-
-Visit
------
-You can visit on
-```
-http://www.example.com/documentation
-```
-
-The routing path can be changed in the published configuration file, or the automatic registration route is cancelled.
-**If the route is registered by yourself, add a route in your web routes file**.
+**Use on Model** trait, you can use it quickly. Using trait on the model, you can quickly use it to automatically encrypt the ID when the model is serialized and the value of the field set by ```$needhashidfields```.
 ```php
-Route::get("your/router/path/{first?}/{second?}/{third?}", "Cirlmcesc\LaravelMddoc\MddocController@view");
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+use Cirlmcesc\LaravelHashids\Traits\Hashidsable;
+
+class Foo extends Model
+{
+    use Hashidsable;
+
+    public $needHashIdFields = [
+        'xxx_id',
+        'yyy_id',
+        'zzz_id',
+    ];
+}
 ```
+**Use functions elsewhere** to quickly encrypt and decrypt. Some functions are provided.
+```php
+<?php
+/**
+ * hashids function
+ *
+ * @return Hashids
+ */
+function hashids(): Hashids
+
+/**
+ * hashidsencode function
+ *
+ * @param Int $id
+ * @return String
+ */
+function hashidsencode(Int $id): String
+
+/**
+ * hashidsdecode function
+ *
+ * @param String $id
+ * @return Int
+ */
+function hashidsdecode(String $id): Int
+```
+**Test command** can use encryption and decryption on the command line.
+```php artisan hashids:test```
 
 Other
 -----
-**The home page displays the project's README.md file by default**.
-You can modify the contents of the home page in the published configuration file.
-An auxiliary function is provided to handle markdown content for home page display.
-```php
-function parse_markdown(String $markdown_file_path) : String
-```

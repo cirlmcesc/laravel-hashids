@@ -43,10 +43,14 @@ class LaravelHashidsServiceProvider extends ServiceProvider
          */
         if ($this->app->runningInConsole()) {
             $this->commands([
-
+                \Cirlmcesc\LaravelHashids\Commands\HashidsCommand::class,
+                \Cirlmcesc\LaravelHashids\Commands\InstallCommand::class,
             ]);
         }
 
+        /**
+         * Config
+         */
         $this->publishes([
             __DIR__ . "/../../../config/hashids.php" => config_path("hashids.php"),
         ], "hashids-config");

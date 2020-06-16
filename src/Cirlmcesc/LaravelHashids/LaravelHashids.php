@@ -1,6 +1,6 @@
 <?php
 
-namespace Cirlmcesc\LaravelMddoc;
+namespace Cirlmcesc\LaravelHashids;
 
 use Hashids\Hashids;
 

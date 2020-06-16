@@ -3,6 +3,11 @@
     "description": "Automatically hash the field with ID in the Eloquent model.",
     "license": "MIT",
     "type": "laravel-package",
+    "keywords": [
+        "laravel",
+        "hashids",
+        "model"
+    ],
     "authors": [
         {
             "name": "Cirlmcesc Ma",
@@ -16,7 +21,7 @@
     },
     "autoload": {
         "classmap": [
-            "src/Console"
+            "src/Commands"
         ],
         "psr-4": {
             "Cirlmcesc\\LaravelHashids\\": "src/"
