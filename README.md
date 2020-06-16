@@ -44,9 +44,11 @@ class Foo extends Model
     ];
 }
 ```
+
 **Use functions elsewhere** to quickly encrypt and decrypt. Some functions are provided.
 ```php
 <?php
+
 /**
  * hashids function
  *
@@ -69,6 +71,9 @@ function hashidsencode(Int $id): String
  * @return Int
  */
 function hashidsdecode(String $id): Int
+
 ```
 **Test command** can use encryption and decryption on the command line.
-```php artisan hashids:test```
+```shell
+php artisan hashids:test
+```
