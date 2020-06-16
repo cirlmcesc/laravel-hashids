@@ -20,12 +20,6 @@
         "hashids/hashids": "^4.0"
     },
     "autoload": {
-        "classmap": [
-            "src/Commands",
-            "src/Providers",
-            "src/Traits",
-            "src"
-        ],
         "psr-4": {
             "Cirlmcesc\\LaravelHashids\\": "src/"
         },
@@ -36,7 +30,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Cirlmcesc\\LaravelHashids\\LaravelHashidsServiceProvider"
+                "Cirlmcesc\\LaravelHashids\\Providers\\LaravelHashidsServiceProvider"
             ]
         }
     }
