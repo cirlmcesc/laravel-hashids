@@ -4,7 +4,7 @@ namespace Cirlmcesc\LaravelHashids\Commands;
 
 use Illuminate\Console\Command;
 
-class HashidCommand extends Command
+class HashidsCommand extends Command
 {
     /**
      * The name and signature of the console command.

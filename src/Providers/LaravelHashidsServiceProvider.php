@@ -21,7 +21,7 @@ class LaravelHashidsServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . "/../../../config/hashids.php", "hashids");
+        $this->mergeConfigFrom(__DIR__ . "/../../config/hashids.php", "hashids");
 
         $this->app->singleton(Hashids::class, function () {
             return new Hashids(config('hashids.salt', config('app.key')), config('hashids.length', 16));
@@ -53,7 +53,7 @@ class LaravelHashidsServiceProvider extends ServiceProvider
          * Config
          */
         $this->publishes([
-            __DIR__ . "/../../../config/hashids.php" => config_path("hashids.php"),
+            __DIR__ . "/../../config/hashids.php" => config_path("hashids.php"),
         ], "hashids-config");
     }
 }
