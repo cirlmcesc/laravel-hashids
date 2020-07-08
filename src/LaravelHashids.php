@@ -43,6 +43,10 @@ class LaravelHashids
      */
     public function decode(String $id, Int $default = 0): Int
     {
-        return (Int) $this->hashids->decode($id)[0] ?? ($default ?? $id);
+        $resault = $this->hashids->decode($id);
+
+        return (Int) count($resault) > 0
+            ? $resault[0]
+            : ($default ? $default : $id);
     }
 }
