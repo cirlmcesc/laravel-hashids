@@ -36,7 +36,7 @@ trait Hashidsable
                 }
             } else {
                 foreach ($model->attributes as $field => $value) {
-                    if (Str::contains($field, self::$_ID_STRING) == true
+                    if (Str::endsWith($field, self::$_ID_STRING) == true
                         && $model->doesntneedHashidField($field) == false) {
                         $model->decodeAttribute($field);
                     }
@@ -54,8 +54,8 @@ trait Hashidsable
     private function encodeAttribute(String $field)
     {
         $this->attributes[$field] = $this->attributes[$field] == null
-        ? null
-        : $this->hashids()->encode($this->$attributes[$field]);
+            ? null
+            : $this->hashids()->encode($this->$attributes[$field]);
     }
 
     /**
@@ -79,7 +79,7 @@ trait Hashidsable
     private function hasProperlySetNeedHasdidFields(): Bool
     {
         return empty($this->needHashidFields) === false
-        && gettype($this->needHashidFields) === 'array';
+            && gettype($this->needHashidFields) === 'array';
     }
 
     /**
@@ -90,7 +90,7 @@ trait Hashidsable
     private function hasProperlySetDoesntneedHasdidFields(): Bool
     {
         return empty($this->doesntneedHashidFields) === false
-        && gettype($this->doesntneedHashidFields) === 'array';
+            && gettype($this->doesntneedHashidFields) === 'array';
     }
 
     /**
@@ -102,7 +102,7 @@ trait Hashidsable
     private function doesntneedHashidField(String $field): Bool
     {
         return $this->hasProperlySetDoesntneedHasdIdFields()
-        && in_array($field, $this->doesntneedHashidFields);
+            && in_array($field, $this->doesntneedHashidFields);
     }
 
     /**
@@ -141,11 +141,11 @@ trait Hashidsable
         } else {
             foreach ($data as $field => $value) {
                 // Determine whether the field contains an ID field
-                if (Str::contains($field, self::$_ID_STRING) == true
+                if (Str::endsWith($field, self::$_ID_STRING) == true
                     && $this->doesntneedHashidField($field) == false) {
                     $data[$field] = $value == null
-                    ? null
-                    : $hashids->encode((int) $value);
+                        ? null
+                        : $hashids->encode((int) $value);
                 }
             }
         }

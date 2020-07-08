@@ -35,7 +35,7 @@ class HashidsCommand extends Command
         ], 0);
 
         $this->info($action == "encryption"
-            ? hashids($value)
+            ? hashidsencode($value)
             : hashidsdecode($value));
     }
 }
