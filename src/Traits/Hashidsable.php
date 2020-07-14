@@ -169,9 +169,9 @@ trait Hashidsable
     /**
      * hashids function
      *
-     * @return Hashids
+     * @return LaravelHashids
      */
-    public function hashids(): Hashids
+    public function hashids(): LaravelHashids
     {
         if (empty(self::$_HASHIDS == true)) {
             self::$_HASHIDS = resolve(LaravelHashids::class);
