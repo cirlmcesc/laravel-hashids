@@ -3,6 +3,7 @@
 namespace Cirlmcesc\LaravelHashids\Traits;
 
 use Illuminate\Support\Str;
+use Cirlmcesc\LaravelHashids\LaravelHashids;
 
 trait Hashidsable
 {
@@ -156,10 +157,11 @@ trait Hashidsable
     /**
      * resolveRouteBinding function
      *
-     * @param String $value
+     * @param mixed $value
+     * @param mixed $field
      * @return mixed
      */
-    public function resolveRouteBinding($value)
+    public function resolveRouteBinding($value, $field = null)
     {
         return $this->find($this->hashids()->decode($value) ?? $value) ?? abort(404);
     }
