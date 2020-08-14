@@ -38,7 +38,8 @@ trait Hashidsable
             } else {
                 foreach ($model->attributes as $field => $value) {
                     if (Str::endsWith($field, self::$_ID_STRING) == true
-                        && $model->doesntneedHashidField($field) == false) {
+                        && $model->doesntneedHashidField($field) == false
+                        && $value) {
                         $model->decodeAttribute($field);
                     }
                 }
