@@ -30,7 +30,7 @@ trait Hashidsable
     {
         static::saving(function ($model) {
             if ($model->hasProperlySetNeedHasdidFields() == true) {
-                foreach ($model->needHashIdFields as $field) {
+                foreach ($model->needHashidFields as $field) {
                     if (key_exists($field, $model->attributes)) {
                         $model->decodeAttribute($field);
                     }
@@ -103,7 +103,7 @@ trait Hashidsable
      */
     private function doesntneedHashidField(String $field): Bool
     {
-        return $this->hasProperlySetDoesntneedHasdIdFields()
+        return $this->hasProperlySetDoesntneedHasdidFields()
             && in_array($field, $this->doesntneedHashidFields);
     }
 
@@ -129,7 +129,7 @@ trait Hashidsable
         // Determine whether there are other fields that need hash.
         // Determine if there are other fields that need hash. If so, hash them in turn.
         if ($this->hasProperlySetNeedHasdidFields() == true) {
-            foreach ($this->needHashIdFields as $field) {
+            foreach ($this->needHashidFields as $field) {
                 // To prevent field name errors
                 // First, determine whether the field exists or not.
                 if (key_exists($field, $data)) {
