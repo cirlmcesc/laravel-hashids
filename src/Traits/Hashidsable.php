@@ -68,7 +68,9 @@ trait Hashidsable
      */
     private function decodeAttribute(String $field)
     {
-        $this->attributes[$field] = $this->hashids()->decode($this->attributes[$field]) ?? $this->attributes[$field];
+        $this->attributes[$field] = $this->attributes[$field] == null
+            ? null
+            : $this->hashids()->decode($this->attributes[$field]);
 
         return $this;
     }
