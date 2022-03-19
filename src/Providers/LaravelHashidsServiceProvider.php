@@ -24,7 +24,7 @@ class LaravelHashidsServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . "/../../config/hashids.php", "hashids");
 
         $this->app->singleton(Hashids::class, function () {
-            return new Hashids(config('hashids.salt', config('app.key')), config('hashids.length', 16));
+            return new Hashids(config('hashids.salt'), config('hashids.length'), config('hashids.alphabet'));
         });
 
         $this->app->singleton(LaravelHashids::class, function () {

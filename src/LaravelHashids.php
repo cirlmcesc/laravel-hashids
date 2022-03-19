@@ -7,11 +7,28 @@ use Hashids\Hashids;
 class LaravelHashids
 {
     /**
+     * const method
+     */
+    const NORMAL_METHOD = 'normal';
+
+    /**
+     * const method
+     */
+    const HEX_METHOD = 'hexadecimal';
+
+    /**
      * Hashids variable
      *
      * @var Hashids\Hashids
      */
-    public $hashids;
+    private $hashids;
+
+    /**
+     * use_hexadecimal variable
+     *
+     * @var boolean
+     */
+    private $use_hexadecimal = false;
 
     /**
      * __construct function
@@ -21,31 +38,57 @@ class LaravelHashids
     public function __construct(Hashids $hashids)
     {
         $this->hashids = $hashids;
+
+        $this->use_hexadecimal = config('hashids.method') == self::HEX_METHOD;
+    }
+
+    /**
+     * getHashidInstance function
+     *
+     * @return Hashids
+     */
+    public function getHashidInstance(): Hashids
+    {
+        return $this->hashids;
+    }
+
+    /**
+     * getHashMethod function
+     *
+     * @return boolean
+     */
+    public function getHashMethod(): string
+    {
+        return $this->use_hexadecimal ? self::NORMAL_METHOD : self::HEX_METHOD;
     }
 
     /**
      * encode function
      *
-     * @param Int $id
-     * @return String
+     * @param int $id
+     * @return string
      */
-    public function encode(Int $id): String
+    public function encode(int $id): string
     {
-        return $this->hashids->encode($id);
+        return $this->use_hexadecimal
+            ? $this->hashids->encodeHex($id)
+            : $this->hashids->encode($id);
     }
 
     /**
      * decode function
      *
-     * @param String $id
-     * @param Int $default
-     * @return Int
+     * @param string $id
+     * @param int $default
+     * @return int
      */
-    public function decode(String $id, Int $default = 0): Int
+    public function decode(string $id, int $default = 0): int
     {
-        $resault = $this->hashids->decode($id);
+        $resault = $this->use_hexadecimal
+            ? $this->hashids->decodeHex($id)
+            : $this->hashids->decode($id);
 
-        return (Int) count($resault) > 0
+        return (int) count($resault) > 0
             ? $resault[0]
             : ($default ? $default : $id);
     }

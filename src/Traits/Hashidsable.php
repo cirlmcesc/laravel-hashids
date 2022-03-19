@@ -50,10 +50,10 @@ trait Hashidsable
     /**
      * encodeAttribute function
      *
-     * @param String $field
+     * @param string $field
      * @return void
      */
-    private function encodeAttribute(String $field)
+    private function encodeAttribute(string $field)
     {
         $this->attributes[$field] = $this->attributes[$field] == null
             ? null
@@ -63,10 +63,10 @@ trait Hashidsable
     /**
      * decodeAttribute function
      *
-     * @param String $field
+     * @param string $field
      * @return mixed
      */
-    private function decodeAttribute(String $field)
+    private function decodeAttribute(string $field)
     {
         $this->attributes[$field] = $this->attributes[$field] == null
             ? null
@@ -78,9 +78,9 @@ trait Hashidsable
     /**
      * hasProperlySetNeedHasdidFields function
      *
-     * @return Bool
+     * @return bool
      */
-    private function hasProperlySetNeedHasdidFields(): Bool
+    private function hasProperlySetNeedHasdidFields(): bool
     {
         return empty($this->needHashidFields) === false
             && gettype($this->needHashidFields) === 'array';
@@ -89,9 +89,9 @@ trait Hashidsable
     /**
      * hasProperlySetDoesntneedHasdidFields function
      *
-     * @return Bool
+     * @return bool
      */
-    private function hasProperlySetDoesntneedHasdidFields(): Bool
+    private function hasProperlySetDoesntneedHasdidFields(): bool
     {
         return empty($this->doesntneedHashidFields) === false
             && gettype($this->doesntneedHashidFields) === 'array';
@@ -100,10 +100,10 @@ trait Hashidsable
     /**
      * doesntneedHashidField function
      *
-     * @param String $field
-     * @return Bool
+     * @param string $field
+     * @return bool
      */
-    private function doesntneedHashidField(String $field): Bool
+    private function doesntneedHashidField(string $field): bool
     {
         return $this->hasProperlySetDoesntneedHasdidFields()
             && in_array($field, $this->doesntneedHashidFields);
@@ -112,7 +112,7 @@ trait Hashidsable
     /**
      * attributesToArray function
      *
-     * @return Array
+     * @return array
      */
     public function attributesToArray(): array
     {

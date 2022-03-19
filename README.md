@@ -2,7 +2,7 @@
 
 TL;DR
 -----
-Do not explicitly display the ID of the data in the interface or URI. Use the Trail on the Model to automatically encrypt the ID, and at the same time, it will correctly decrypt the instance of the class you want to inject into the route. It also provides quick methods to encrypt and decrypt the ID when you need. It provides some commands for testing. Inspired by [vinkla/laravel-hashids](https://github.com/vinkla/laravel-hashids).
+Do not explicitly display the ID of the data in the interface or URI. Use the Trail on the Model to automatically encrypt the ID, and at the same time, it will correctly decrypt the instance of the class you want to inject into the route. It also provides quick methods to encrypt and decrypt the ID when you need. It provides some commands for testing. Inspired by [vinkla/hashids](https://github.com/vinkla/hashids).
 
 Install
 -------

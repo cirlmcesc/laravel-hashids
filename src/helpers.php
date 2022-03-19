@@ -20,10 +20,10 @@ if (! function_exists('hashidsencode')) {
     /**
      * hashidsencode function
      *
-     * @param Int $id
-     * @return String
+     * @param int $id
+     * @return string
      */
-    function hashidsencode(Int $id): String
+    function hashidsencode(int $id): string
     {
         return resolve(LaravelHashids::class)->encode($id);
     }
@@ -33,10 +33,10 @@ if (! function_exists('hashidsdecode')) {
     /**
      * hashidsdecode function
      *
-     * @param String $id
-     * @return Int
+     * @param string $id
+     * @return int
      */
-    function hashidsdecode(String $id, Int $default = 0): Int
+    function hashidsdecode(string $id, int $default = 0): int
     {
         return resolve(LaravelHashids::class)->decode($id, $default);
     }
@@ -46,11 +46,11 @@ if (! function_exists('hashidsencode_array')) {
     /**
      * hashidsencode_array function
      *
-     * @param Array $data
-     * @param Array $dosent_encode_keys
-     * @return Array
+     * @param array $data
+     * @param array $dosent_encode_keys
+     * @return array
      */
-    function hashidsencode_array(Array $data, Array $dosent_encode_keys = []): Array
+    function hashidsencode_array(array $data, array $dosent_encode_keys = []): array
     {
         foreach ($data as $key => $value) {
             if (Str::endsWith($key, '_id') && in_array($key, $dosent_encode_keys) == false) {
@@ -66,11 +66,11 @@ if (! function_exists('hashidsdecode_array')) {
     /**
      * hashidsdecode_array function
      *
-     * @param Array $data
-     * @param Array $dosent_decode_keys
-     * @return Array
+     * @param array $data
+     * @param array $dosent_decode_keys
+     * @return array
      */
-    function hashidsdecode_array(Array $data, Array $dosent_decode_keys = []): Array
+    function hashidsdecode_array(array $data, array $dosent_decode_keys = []): array
     {
         foreach ($data as $key => $value) {
             if (Str::endsWith($key, '_id') && in_array($key, $dosent_decode_keys) == false) {
