@@ -2,6 +2,7 @@
 
 namespace Cirlmcesc\LaravelHashids\Providers;
 
+use Cirlmcesc\LaravelHashids\LaravelHashids;
 use Illuminate\Support\ServiceProvider;
 use Hashids\Hashids;
 
@@ -23,13 +24,7 @@ class LaravelHashidsServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__ . "/../../config/hashids.php", "hashids");
 
-        $this->app->singleton(Hashids::class, function () {
-            return new Hashids(config('hashids.salt'), config('hashids.length'), config('hashids.alphabet'));
-        });
-
-        $this->app->singleton(LaravelHashids::class, function () {
-            return new LaravelHashids(resolve(Hashids::class));
-        });
+        $this->app->singleton(LaravelHashids::class, fn() => new LaravelHashids());
     }
 
     /**

@@ -25,7 +25,7 @@ return [
     | and the raw HashID are combined all together. So the Model HashID
     | length is the sum of raw HashID, separator, and model prefix lengths.
     |
-    | Default: 13
+    | Default: 16
     |
     */
 
@@ -38,12 +38,18 @@ return [
     |
     | This alphabet will generate raw HashIDs. Please keep in mind that it
     | must contain at least 16 unique characters and can't contain spaces.
+    | 
+    | This code was written with the intent of placing the output ids in visible places, 
+    | like the URL. Therefore, the algorithm tries to avoid generating most common English 
+    | curse words by generating ids that never have the following letters next to each other:
+    | 
+    | Letters that should not appear: c, f, h, i, s, t, u
     |
-    | Default: 'abcdefghjklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ234567890'
+    | Default: 'abdegjklmnopqrtvwxyzABDEGJKLMNOPQRVWXYZ'
     |
     */
 
-    'alphabet' => env('HASH_ALPHABET', 'abcdefghjklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ1234567890'),
+    'alphabet' => env('HASH_ALPHABET', 'abdegjklmnopqrtvwxyzABDEGJKLMNOPQRVWXYZ'),
 
     /*
     |--------------------------------------------------------------------------

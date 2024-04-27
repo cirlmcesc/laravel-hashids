@@ -19,7 +19,7 @@ class LaravelHashids
     /**
      * Hashids variable
      *
-     * @var Hashids\Hashids
+     * @var Hashids
      */
     private $hashids;
 
@@ -33,11 +33,14 @@ class LaravelHashids
     /**
      * __construct function
      *
-     * @param Hashids $hashids
      */
-    public function __construct(Hashids $hashids)
+    public function __construct()
     {
-        $this->hashids = $hashids;
+        $this->hashids = new Hashids(
+            salt: config("hashids.salt"),
+            minHashLength: config("hashids.length"),
+            alphabet: config("hashids.alphabet")
+        );
 
         $this->use_hexadecimal = config('hashids.method') == self::HEX_METHOD;
     }

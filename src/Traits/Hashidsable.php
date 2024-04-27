@@ -4,41 +4,35 @@ namespace Cirlmcesc\LaravelHashids\Traits;
 
 use Illuminate\Support\Str;
 use Cirlmcesc\LaravelHashids\LaravelHashids;
+use Cirlmcesc\LaravelHashids\Exceptions\LarvelHashidsException;
 
 trait Hashidsable
 {
     /**
      * id string variable
      *
-     * @var string
+     * @param sring _ID_STRING
      */
-    public static $_ID_STRING = "_id";
+    const _ID_STRING = "_id";
 
     /**
-     * hashids variable
-     *
-     * @var Hashids
-     */
-    public static $_HASHIDS;
-
-    /**
-     * bootHashIdsable function
+     * bootHashidsable function
      *
      * @return void
      */
-    public static function bootHashIdsable()
+    public static function bootHashidsable()
     {
         static::saving(function ($model) {
-            if ($model->hasProperlySetNeedHasdidFields() == true) {
-                foreach ($model->needHashidFields as $field) {
+            if ($model->hasProperlySetNeedEncodeFields() === true) {
+                foreach ($model->needEncodeFields as $field) {
                     if (key_exists($field, $model->attributes)) {
                         $model->decodeAttribute($field);
                     }
                 }
             } else {
                 foreach ($model->attributes as $field => $value) {
-                    if (Str::endsWith($field, self::$_ID_STRING) == true
-                        && $model->doesntneedHashidField($field) == false
+                    if (Str::endsWith($field, self::_ID_STRING) === true
+                        && $model->doesntNeedEncodeFields($field) === false
                         && $value) {
                         $model->decodeAttribute($field);
                     }
@@ -57,7 +51,7 @@ trait Hashidsable
     {
         $this->attributes[$field] = $this->attributes[$field] == null
             ? null
-            : $this->hashids()->encode($this->$attributes[$field]);
+            : $this->hashids()->encode($this->attributes[$field]);
     }
 
     /**
@@ -76,37 +70,62 @@ trait Hashidsable
     }
 
     /**
-     * hasProperlySetNeedHasdidFields function
+     * hasProperlySetOnlyEncodeId function
      *
-     * @return bool
+     * @return boolean
      */
-    private function hasProperlySetNeedHasdidFields(): bool
+    private function hasProperlySetOnlyEncodeId(): bool
     {
-        return empty($this->needHashidFields) === false
-            && gettype($this->needHashidFields) === 'array';
+        return empty($this->onlyEncodeId) === false
+            && gettype($this->onlyEncodeId) === 'boolean';
     }
 
     /**
-     * hasProperlySetDoesntneedHasdidFields function
+     * hasProperlySetNeedEncodeFields function
      *
      * @return bool
      */
-    private function hasProperlySetDoesntneedHasdidFields(): bool
+    private function hasProperlySetNeedEncodeFields(): bool
     {
-        return empty($this->doesntneedHashidFields) === false
-            && gettype($this->doesntneedHashidFields) === 'array';
+        return empty($this->needEncodeFields) === false
+            && gettype($this->needEncodeFields) === 'array';
     }
 
     /**
-     * doesntneedHashidField function
+     * hasProperlySetDoesntNeedEncodeFields function
+     *
+     * @return bool
+     */
+    private function hasProperlySetDoesntNeedEncodeFields(): bool
+    {
+        return empty($this->doesntNeedEncodeFields) === false
+            && gettype($this->doesntNeedEncodeFields) === 'array';
+    }
+
+    /**
+     * doesntNeedEncodeField function
      *
      * @param string $field
      * @return bool
      */
-    private function doesntneedHashidField(string $field): bool
+    private function doesntNeedEncodeField(string $field): bool
     {
-        return $this->hasProperlySetDoesntneedHasdidFields()
-            && in_array($field, $this->doesntneedHashidFields);
+        return $this->hasProperlySetDoesntNeedEncodeFields()
+            && in_array($field, $this->doesntNeedEncodeFields);
+    }
+
+    /**
+     * checkProperlyReasonable function
+     *
+     * @return void
+     * @throws LarvelHashidsException
+     */
+    private function checkProperlyReasonable(): void
+    {
+        if ($this->hasProperlySetNeedEncodeFields() == true
+            && $this->hasProperlySetDoesntNeedEncodeFields() == true) {
+                throw new LarvelHashidsException("\$needEncodeFields and \$dosntNeedEncodeFields are mutually exclusive. Cannot coexist simultaneously.");
+        }
     }
 
     /**
@@ -116,6 +135,8 @@ trait Hashidsable
      */
     public function attributesToArray(): array
     {
+        $this->checkProperlyReasonable();
+
         $hashids = $this->hashids();
 
         // First, use the built-in method of model to get arrays,
@@ -128,25 +149,29 @@ trait Hashidsable
             $data['id'] = $hashids->encode($data['id']);
         }
 
+        if ($this->hasProperlySetOnlyEncodeId() == true) {
+            return $data;
+        }
+
         // Determine whether there are other fields that need hash.
         // Determine if there are other fields that need hash. If so, hash them in turn.
-        if ($this->hasProperlySetNeedHasdidFields() == true) {
-            foreach ($this->needHashidFields as $field) {
+        if ($this->hasProperlySetNeedEncodeFields() == true) {
+            foreach ($this->needEncodeFields as $field) {
                 // To prevent field name errors
                 // First, determine whether the field exists or not.
                 if (key_exists($field, $data)) {
                     $data[$field] = $data[$field] == null
-                    ? null
-                    : $hashids->encode((int) $data[$field]);
+                        ? null
+                        : $hashids->encode((int) $data[$field]);
                 }
             }
+        } else {
             // If no field is set.
             // Automatically hash all fields with ID fields.
-        } else {
             foreach ($data as $field => $value) {
                 // Determine whether the field contains an ID field
-                if (Str::endsWith($field, self::$_ID_STRING) == true
-                    && $this->doesntneedHashidField($field) == false) {
+                if (Str::endsWith($field, self::_ID_STRING) == true
+                    && $this->doesntNeedEncodeField($field) == false) {
                     $data[$field] = $value == null
                         ? null
                         : $hashids->encode((int) $value);
@@ -160,9 +185,9 @@ trait Hashidsable
     /**
      * resolveRouteBinding function
      *
-     * @param mixed $value
-     * @param mixed $field
-     * @return mixed
+     * @param string|int $value
+     * @param string $field
+     * @return Illuminate\Database\Eloquent\Model|null
      */
     public function resolveRouteBinding($value, $field = null)
     {
@@ -176,10 +201,6 @@ trait Hashidsable
      */
     public function hashids(): LaravelHashids
     {
-        if (empty(self::$_HASHIDS == true)) {
-            self::$_HASHIDS = resolve(LaravelHashids::class);
-        }
-
-        return self::$_HASHIDS;
+        return resolve(LaravelHashids::class);
     }
 }

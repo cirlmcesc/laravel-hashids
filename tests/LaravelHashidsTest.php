@@ -37,25 +37,11 @@ class LaravelHashidsTest extends TestCase
     public $larvelhashids;
 
     /**
-     * conf variable
-     *
-     * @var array
-     */
-    public $conf = [
-        'salt' => 'laravelhashids',
-        'length' => 16,
-        'alphabet' => 'abcdefghjklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ1234567890',
-    ];
-
-    /**
      * __construct function
      */
     public function __construct()
     {
-        $this->larvelhashids = new LaravelHashids(
-            $this->conf['salt'],
-            $this->conf['length'],
-            $this->conf['alphabet']);
+        $this->larvelhashids = new LaravelHashids();
     }
 
     /**

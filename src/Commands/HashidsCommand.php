@@ -3,6 +3,7 @@
 namespace Cirlmcesc\LaravelHashids\Commands;
 
 use Illuminate\Console\Command;
+use Cirlmcesc\LaravelHashids\LaravelHashids;
 
 class HashidsCommand extends Command
 {
@@ -18,7 +19,7 @@ class HashidsCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Testing ID after hash or hash id.';
+    protected $description = 'Test encrypting or decrypting the ID.';
 
     /**
      * Execute the console command.
@@ -35,7 +36,7 @@ class HashidsCommand extends Command
         ], 0);
 
         $this->info($action == "encryption"
-            ? hashidsencode($value)
-            : hashidsdecode($value));
+            ? resolve(LaravelHashids::class)->encode($value)
+            : resolve(LaravelHashids::class)->decode($value));
     }
 }
