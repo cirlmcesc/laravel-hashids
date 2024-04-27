@@ -22,7 +22,7 @@ composer require cirlmcesc/laravel-hashids
 Add Service Provider to `config/app.php` in `providers` section
 
 ```php
-Cirlmcesc\LaravelMddoc\LaravelHashidsServiceProvider::class,
+Cirlmcesc\LaravelHashids\LaravelHashidsServiceProvider::class,
 ```
 
 **Configuration file**
