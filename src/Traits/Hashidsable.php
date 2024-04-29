@@ -2,16 +2,17 @@
 
 namespace Cirlmcesc\LaravelHashids\Traits;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Cirlmcesc\LaravelHashids\LaravelHashids;
-use Cirlmcesc\LaravelHashids\Exceptions\LarvelHashidsException;
+use Cirlmcesc\LaravelHashids\Exceptions\AttributeNotProperlySetException;
 
 trait Hashidsable
 {
     /**
      * id string variable
      *
-     * @param sring _ID_STRING
+     * @property string string _ID_STRING
      */
     const _ID_STRING = "_id";
 
@@ -22,18 +23,21 @@ trait Hashidsable
      */
     public static function bootHashidsable()
     {
-        static::saving(function ($model) {
+        static::saving(function (Model $model) {
             if ($model->hasProperlySetNeedEncodeFields() === true) {
-                foreach ($model->needEncodeFields as $field) {
+                foreach ($model->_need_encode_fields as $field) {
                     if (key_exists($field, $model->attributes)) {
                         $model->decodeAttribute($field);
                     }
                 }
             } else {
+                $doesnt_need_encode_fields = $model->hasProperlySetDoesntNeedEncodeFields()
+                    ? $model->_doesnt_need_encode_fields
+                    : [];
+
                 foreach ($model->attributes as $field => $value) {
                     if (Str::endsWith($field, self::_ID_STRING) === true
-                        && $model->doesntNeedEncodeFields($field) === false
-                        && $value) {
+                        && key_exists($field, $doesnt_need_encode_fields) === false) {
                         $model->decodeAttribute($field);
                     }
                 }
@@ -42,29 +46,16 @@ trait Hashidsable
     }
 
     /**
-     * encodeAttribute function
-     *
-     * @param string $field
-     * @return void
-     */
-    private function encodeAttribute(string $field)
-    {
-        $this->attributes[$field] = $this->attributes[$field] == null
-            ? null
-            : $this->hashids()->encode($this->attributes[$field]);
-    }
-
-    /**
      * decodeAttribute function
      *
      * @param string $field
-     * @return mixed
+     * @return self
      */
-    private function decodeAttribute(string $field)
+    private function decodeAttribute(string $field): self
     {
         $this->attributes[$field] = $this->attributes[$field] == null
             ? null
-            : $this->hashids()->decode($this->attributes[$field]);
+            : $this->hashids()->decode((string) $this->attributes[$field]);
 
         return $this;
     }
@@ -76,8 +67,8 @@ trait Hashidsable
      */
     private function hasProperlySetOnlyEncodeId(): bool
     {
-        return empty($this->onlyEncodeId) === false
-            && gettype($this->onlyEncodeId) === 'boolean';
+        return empty($this->_only_encode_id) === false
+            && gettype($this->_only_encode_id) === 'boolean';
     }
 
     /**
@@ -87,8 +78,8 @@ trait Hashidsable
      */
     private function hasProperlySetNeedEncodeFields(): bool
     {
-        return empty($this->needEncodeFields) === false
-            && gettype($this->needEncodeFields) === 'array';
+        return empty($this->_need_encode_fields) === false
+            && gettype($this->_need_encode_fields) === 'array';
     }
 
     /**
@@ -98,8 +89,8 @@ trait Hashidsable
      */
     private function hasProperlySetDoesntNeedEncodeFields(): bool
     {
-        return empty($this->doesntNeedEncodeFields) === false
-            && gettype($this->doesntNeedEncodeFields) === 'array';
+        return empty($this->_doesnt_need_encode_fields) === false
+            && gettype($this->_doesnt_need_encode_fields) === 'array';
     }
 
     /**
@@ -111,21 +102,23 @@ trait Hashidsable
     private function doesntNeedEncodeField(string $field): bool
     {
         return $this->hasProperlySetDoesntNeedEncodeFields()
-            && in_array($field, $this->doesntNeedEncodeFields);
+            && in_array($field, $this->_doesnt_need_encode_fields);
     }
 
     /**
      * checkProperlyReasonable function
      *
-     * @return void
+     * @return self
      * @throws LarvelHashidsException
      */
-    private function checkProperlyReasonable(): void
+    private function checkProperlyReasonable(): self
     {
         if ($this->hasProperlySetNeedEncodeFields() == true
             && $this->hasProperlySetDoesntNeedEncodeFields() == true) {
-                throw new LarvelHashidsException("\$needEncodeFields and \$dosntNeedEncodeFields are mutually exclusive. Cannot coexist simultaneously.");
+            throw new AttributeNotProperlySetException();
         }
+
+        return $this;
     }
 
     /**
@@ -135,9 +128,7 @@ trait Hashidsable
      */
     public function attributesToArray(): array
     {
-        $this->checkProperlyReasonable();
-
-        $hashids = $this->hashids();
+        $hashids = $this->checkProperlyReasonable()->hashids();
 
         // First, use the built-in method of model to get arrays,
         // which can avoid some unknown problems.
@@ -145,18 +136,18 @@ trait Hashidsable
 
         // Hash the ID field. Because by default it is assumed that
         // using this trait requires hash on the ID.
-        if (key_exists('id', $data)) {
+        if (key_exists('id', $data) == true) {
             $data['id'] = $hashids->encode($data['id']);
-        }
 
-        if ($this->hasProperlySetOnlyEncodeId() == true) {
-            return $data;
+            if ($this->hasProperlySetOnlyEncodeId() == true) {
+                return $data;
+            }
         }
 
         // Determine whether there are other fields that need hash.
         // Determine if there are other fields that need hash. If so, hash them in turn.
         if ($this->hasProperlySetNeedEncodeFields() == true) {
-            foreach ($this->needEncodeFields as $field) {
+            foreach ($this->_need_encode_fields as $field) {
                 // To prevent field name errors
                 // First, determine whether the field exists or not.
                 if (key_exists($field, $data)) {

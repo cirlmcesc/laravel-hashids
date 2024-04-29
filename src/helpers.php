@@ -43,12 +43,15 @@ if (! function_exists('hashids_encode_in_array')) {
         $hashids = resolve(LaravelHashids::class);
 
         if (array_key_exists('id', $data) == true) {
-            $data['id'] = hashids_encode($data['id']);
+            $data['id'] = hashids_encode((int) $data['id']);
         }
 
         foreach ($data as $key => $value) {
-            if (Str::endsWith($key, $id_string) && in_array($key, $dosent_encode_keys) == false) {
-                $data[$key] = $hashids->encode($value);
+            if (Str::endsWith($key, $id_string) 
+                && in_array($key, $dosent_encode_keys) == false) {
+                $data[$key] = $value == null 
+                    ? null
+                    : $hashids->encode((int) $value);
             }
         }
 
@@ -74,8 +77,11 @@ if (! function_exists('hashids_decode_in_array')) {
         }
 
         foreach ($data as $key => $value) {
-            if (Str::endsWith($key, $id_string) && in_array($key, $dosent_decode_keys) == false) {
-                $data[$key] = $hashids->decode($value);
+            if (Str::endsWith($key, $id_string) 
+                && in_array($key, $dosent_decode_keys) == false) {
+                $data[$key] = $value == null 
+                    ? null
+                    : $hashids->decode((string) $value);
             }
         }
 

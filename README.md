@@ -13,6 +13,7 @@ Do not explicitly display the ID of the data in the interface or URI. Use the Tr
 ## Getting started
 
 **Install via composer**
+
 Require this package, with Composer, in the root directory of your project.
 
 ```bash
@@ -26,6 +27,7 @@ Cirlmcesc\LaravelHashids\LaravelHashidsServiceProvider::class,
 ```
 
 **Configuration file**
+
 Artisan command will be published to `config/`. The mode of operation can be customized by modifying parameters and attributes.
 
 ```shell
@@ -37,7 +39,8 @@ php artisan hashids:install
 ## Usage
 
 **Use on Model**
-Use Model trait, you can use it quickly. Using trait on the model, you can quickly use it to automatically encrypt the ID when the model is serialized and the value of the field set by ```$needEncodeFields```. It is also possible to not set this property and all fields ends with ```_id``` will be automatically encrypted.You can choose to set the ```$doesntNeedEncodeFields``` property to prevent these fields from being encrypted. However, ``` $needEncodeFields ``` and ``` $dosntNeedEncodeFields ``` are mutually exclusive. If both are set, an exception will be thrown when the model is serialized into an array. Of course, you can also choose to set the ```$onlyEncodeId``` property to determine whether to encrypt only the ID field.
+
+Use Model trait, you can use it quickly. Using trait on the model, you can quickly use it to automatically encrypt the ID when the model is serialized and the value of the field set by ```$_need_encode_fields```. It is also possible to not set this property and all fields ends with ```_id``` will be automatically encrypted.You can choose to set the ```$_doesnt_need_encode_fields``` property to prevent these fields from being encrypted. However, ``` $_need_encode_fields ``` and ``` $_doesnt_need_encode_fields ``` are mutually exclusive. If both are set, an exception will be thrown when the model is serialized into an array. Of course, you can also choose to set the ```$_only_encode_id``` property to determine whether to encrypt only the ID field.
 
 ```php
 <?php
@@ -57,7 +60,7 @@ class Foo extends Model
      *
      * @var bool
      */
-    public $onlyEncodeId = false;
+    public $_only_encode_id = false;
 
     /**
      * Encrypt the list of other fields that 
@@ -65,7 +68,7 @@ class Foo extends Model
      *
      * @var array<string>
      */
-    public $needEncodeFields = [
+    public $_need_encode_fields = [
         'aaa_id',
         'bbb_id',
         'ccc_id',
@@ -77,7 +80,7 @@ class Foo extends Model
      *
      * @var array<string>
      */
-    public $doesntNeedEncodeFields = [
+    public $_doesnt_need_encode_fields = [
         'xxx_id',
         'yyy_id',
         'zzz_id',
@@ -86,6 +89,7 @@ class Foo extends Model
 ```
 
 **Use on Route**
+
 When injecting the model ID into routing or controller operations, it will automatically decode the ID. No additional action is required.
 
 ```php
@@ -99,6 +103,7 @@ Route::get('/foos/{foo}', fn(Foo $foo) => $foo);
 ```
 
 **Use on Resource Class**
+
 When you use resource classes, model serialization does not go through Model Trait, so you need to encrypt the ID in the ```toArray``` method of the resource class.The usage ```hashids_encode_in_array``` method allows for batch encryption of ID fields.
 
 ```php
@@ -130,6 +135,7 @@ class FooResource extends JsonResource
 ```
 
 **Use functions elsewhere**
+
 Quickly encrypt and decrypt. Some functions are provided.
 
 ```php
