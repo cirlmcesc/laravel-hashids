@@ -10,11 +10,11 @@ use Cirlmcesc\LaravelHashids\Exceptions\AttributeNotProperlySetException;
 trait Hashidsable
 {
     /**
-     * id string variable
+     * id attribute suffix
      *
-     * @property string string _ID_STRING
+     * @var string string _ID_ATTRIBUTE_SUFFIX
      */
-    const _ID_STRING = "_id";
+    const _ID_ATTRIBUTE_SUFFIX = "_id";
 
     /**
      * bootHashidsable function
@@ -24,10 +24,16 @@ trait Hashidsable
     public static function bootHashidsable()
     {
         static::saving(function (Model $model) {
-            if ($model->hasProperlySetNeedEncodeFields() === true) {
-                foreach ($model->_need_encode_fields as $field) {
+            $model->checkProperlyReasonable();
+
+            $hashids = $model->hashids();
+
+            if ($model->hasProperlySetOnlyNeedEncodeFields() === true) {
+                foreach ($model->_only_need_encode_fields as $field) {
                     if (key_exists($field, $model->attributes)) {
-                        $model->decodeAttribute($field);
+                        $model->attributes[$field] = $model->attributes[$field] == null
+                            ? null
+                            : $hashids->decode((string) $model->attributes[$field]);
                     }
                 }
             } else {
@@ -36,28 +42,16 @@ trait Hashidsable
                     : [];
 
                 foreach ($model->attributes as $field => $value) {
-                    if (Str::endsWith($field, self::_ID_STRING) === true
-                        && key_exists($field, $doesnt_need_encode_fields) === false) {
-                        $model->decodeAttribute($field);
+                    if (str_ends_with($field, self::_ID_ATTRIBUTE_SUFFIX)
+                        && ! in_array($field, $doesnt_need_encode_fields)) {
+                        $model->attributes[$field] = $value == null
+                            ? null
+                            : $hashids->decode((string) $value);
                     }
                 }
             }
+
         });
-    }
-
-    /**
-     * decodeAttribute function
-     *
-     * @param string $field
-     * @return self
-     */
-    private function decodeAttribute(string $field): self
-    {
-        $this->attributes[$field] = $this->attributes[$field] == null
-            ? null
-            : $this->hashids()->decode((string) $this->attributes[$field]);
-
-        return $this;
     }
 
     /**
@@ -67,25 +61,25 @@ trait Hashidsable
      */
     private function hasProperlySetOnlyEncodeId(): bool
     {
-        return empty($this->_only_encode_id) === false
-            && gettype($this->_only_encode_id) === 'boolean';
+        return empty($this->_only_need_encode_fields) === false
+            && is_bool($this->_only_encode_id);
     }
 
     /**
-     * hasProperlySetNeedEncodeFields function
+     * hasProperlySetOnlyNeedEncodeFields function
      *
-     * @return bool
+     * @return boolean
      */
-    private function hasProperlySetNeedEncodeFields(): bool
+    private function hasProperlySetOnlyNeedEncodeFields(): bool
     {
-        return empty($this->_need_encode_fields) === false
-            && gettype($this->_need_encode_fields) === 'array';
+        return empty($this->_only_need_encode_fields) === false
+            && gettype($this->_only_need_encode_fields) === 'array';
     }
 
     /**
      * hasProperlySetDoesntNeedEncodeFields function
      *
-     * @return bool
+     * @return boolean
      */
     private function hasProperlySetDoesntNeedEncodeFields(): bool
     {
@@ -97,7 +91,7 @@ trait Hashidsable
      * doesntNeedEncodeField function
      *
      * @param string $field
-     * @return bool
+     * @return boolean
      */
     private function doesntNeedEncodeField(string $field): bool
     {
@@ -111,9 +105,9 @@ trait Hashidsable
      * @return self
      * @throws LarvelHashidsException
      */
-    private function checkProperlyReasonable(): self
+    public function checkProperlyReasonable(): self
     {
-        if ($this->hasProperlySetNeedEncodeFields() == true
+        if ($this->hasProperlySetOnlyNeedEncodeFields() == true
             && $this->hasProperlySetDoesntNeedEncodeFields() == true) {
             throw new AttributeNotProperlySetException();
         }
@@ -146,8 +140,8 @@ trait Hashidsable
 
         // Determine whether there are other fields that need hash.
         // Determine if there are other fields that need hash. If so, hash them in turn.
-        if ($this->hasProperlySetNeedEncodeFields() == true) {
-            foreach ($this->_need_encode_fields as $field) {
+        if ($this->hasProperlySetOnlyNeedEncodeFields() == true) {
+            foreach ($this->_only_need_encode_fields as $field) {
                 // To prevent field name errors
                 // First, determine whether the field exists or not.
                 if (key_exists($field, $data)) {
@@ -161,7 +155,7 @@ trait Hashidsable
             // Automatically hash all fields with ID fields.
             foreach ($data as $field => $value) {
                 // Determine whether the field contains an ID field
-                if (Str::endsWith($field, self::_ID_STRING) == true
+                if (str_ends_with($field, self::_ID_ATTRIBUTE_SUFFIX) == true
                     && $this->doesntNeedEncodeField($field) == false) {
                     $data[$field] = $value == null
                         ? null

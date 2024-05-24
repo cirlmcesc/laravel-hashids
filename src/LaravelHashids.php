@@ -7,26 +7,30 @@ use Hashids\Hashids;
 class LaravelHashids
 {
     /**
-     * const method
+     * normal method
+     * 
+     * @var string NORMAL_METHOD
      */
     const NORMAL_METHOD = 'normal';
 
     /**
-     * const method
+     * hex method
+     * 
+     * @var string HEX_METHOD
      */
     const HEX_METHOD = 'hexadecimal';
 
     /**
      * Hashids variable
      *
-     * @var Hashids
+     * @var Hashids $hashids
      */
     private $hashids;
 
     /**
-     * use_hexadecimal variable
+     * whether use hexadecimal
      *
-     * @var boolean
+     * @var boolean $use_hexadecimal
      */
     private $use_hexadecimal = false;
 
@@ -39,8 +43,7 @@ class LaravelHashids
         $this->hashids = new Hashids(
             salt: config("hashids.salt"),
             minHashLength: config("hashids.length"),
-            alphabet: config("hashids.alphabet")
-        );
+            alphabet: config("hashids.alphabet"));
 
         $this->use_hexadecimal = config('hashids.method') == self::HEX_METHOD;
     }
@@ -82,10 +85,10 @@ class LaravelHashids
      * decode function
      *
      * @param string $id
-     * @param int $default
+     * @param int $remedy
      * @return int
      */
-    public function decode(string $id, int $default = 0): int
+    public function decode(string $id, int $remedy = 0): int
     {
         $resault = $this->use_hexadecimal
             ? $this->hashids->decodeHex($id)
@@ -93,6 +96,6 @@ class LaravelHashids
 
         return (int) count($resault) > 0
             ? $resault[0]
-            : ($default ? $default : $id);
+            : ($remedy ?? $id);
     }
 }

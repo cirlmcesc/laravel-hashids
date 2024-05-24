@@ -2,6 +2,7 @@
 
 namespace Cirlmcesc\LaravelHashids\Commands;
 
+use App\Models\Wechat;
 use Illuminate\Console\Command;
 use Cirlmcesc\LaravelHashids\LaravelHashids;
 
@@ -26,7 +27,7 @@ class HashidsCommand extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(Wechat $wechat)
     {
         $value = $this->ask('Please enter a value');
 

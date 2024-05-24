@@ -20,12 +20,6 @@ Require this package, with Composer, in the root directory of your project.
 composer require cirlmcesc/laravel-hashids
 ```
 
-Add Service Provider to `config/app.php` in `providers` section
-
-```php
-Cirlmcesc\LaravelHashids\LaravelHashidsServiceProvider::class,
-```
-
 **Configuration file**
 
 Artisan command will be published to `config/`. The mode of operation can be customized by modifying parameters and attributes.
@@ -40,7 +34,7 @@ php artisan hashids:install
 
 **Use on Model**
 
-Use Model trait, you can use it quickly. Using trait on the model, you can quickly use it to automatically encrypt the ID when the model is serialized and the value of the field set by ```$_need_encode_fields```. It is also possible to not set this property and all fields ends with ```_id``` will be automatically encrypted.You can choose to set the ```$_doesnt_need_encode_fields``` property to prevent these fields from being encrypted. However, ``` $_need_encode_fields ``` and ``` $_doesnt_need_encode_fields ``` are mutually exclusive. If both are set, an exception will be thrown when the model is serialized into an array. Of course, you can also choose to set the ```$_only_encode_id``` property to determine whether to encrypt only the ID field.
+Use Model trait, you can use it quickly. Using trait on the model, you can quickly use it to automatically encrypt the ID when the model is serialized and the value of the field set by ```$_only_need_encode_fields```. It is also possible to not set this property and all fields ends with ```_id``` will be automatically encrypted.You can choose to set the ```$_doesnt_need_encode_fields``` property to prevent these fields from being encrypted. However, ``` $_only_need_encode_fields ``` and ``` $_doesnt_need_encode_fields ``` are mutually exclusive. If both are set, an exception will be thrown when the model is serialized into an array. Of course, you can also choose to set the ```$_only_encode_id``` property to determine whether to encrypt only the ID field. If additional fields need to be encrypted and the field does not end with ```_id```, then it is necessary to set ```$_only ined_encode_fields``` to all fields ending with ```_id``` plus the fields that require additional encryption Only in this way can it work properly.
 
 ```php
 <?php
@@ -63,20 +57,24 @@ class Foo extends Model
     public $_only_encode_id = false;
 
     /**
-     * Encrypt the list of other fields that 
-     * need to be encrypted while encrypting the ID.
+     * When encrypting an ID, you can choose to
+     * Only encrypt which fields.
+     * You can also set some fields with suffixes 
+     * other than `_id`, but they must be of type `int`.
      *
      * @var array<string>
      */
-    public $_need_encode_fields = [
-        'aaa_id',
-        'bbb_id',
+    public $_only_need_encode_fields = [
+        'aaa',
+        'bbb',
         'ccc_id',
+        'ddd_id',
     ];
 
     /**
      * While encrypting the ID, you can choose 
      * which fields do not encryption,
+     * Only applicable to fields with suffix 'id'.
      *
      * @var array<string>
      */
@@ -142,7 +140,7 @@ Quickly encrypt and decrypt. Some functions are provided.
 <?php
 
 /**
- * hashids_encode function
+ * encode id
  *
  * @param int $id
  * @return string
@@ -150,32 +148,33 @@ Quickly encrypt and decrypt. Some functions are provided.
 function hashids_encode(int $id): string;
 
 /**
- * hashids_decode function
+ *  decode id
  *
  * @param string $id
+ * @param int $remedy 
  * @return int
  */
-function hashids_decode(string $id): int;
+function hashids_decode(string $id, int $remedy = 0): int;
 
  /**
- * hashids_encode_in_array function
+ * encode ids in array
  *
  * @param array $data
  * @param array $dosent_encode_keys
- * @param string $id_string
+ * @param string $id_attribute_suffix
  * @return array
  */
-function hashids_encode_in_array(array $data, array $dosent_encode_keys = [], $id_string = '_id'): array;
+function hashids_encode_in_array(array $data, array $dosent_encode_keys = [], string $suffix = '_id'): array;
 
 /**
- * hashids_decode_in_array function
+ * decode ids in array
  *
  * @param array $data
  * @param array $dosent_decode_keys
- * @param string $id_string
+ * @param string $suffix
  * @return array
  */
-function hashids_decode_in_array(array $data, array $dosent_decode_keys = [], $id_string = '_id'): array;
+function hashids_decode_in_array(array $data, array $dosent_decode_keys = [], string $suffix = '_id'): array;
 
 ```
 

@@ -25,11 +25,11 @@ return [
     | and the raw HashID are combined all together. So the Model HashID
     | length is the sum of raw HashID, separator, and model prefix lengths.
     |
-    | Default: 16
+    | Default: 10
     |
     */
 
-    "length" => env('HASH_LENGTH', 16),
+    "length" => env('HASH_LENGTH', 10),
 
     /*
     |--------------------------------------------------------------------------
