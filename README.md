@@ -161,7 +161,7 @@ function hashids_decode(string $id, int $remedy = 0): int;
  *
  * @param array $data
  * @param array $dosent_encode_keys
- * @param string $id_attribute_suffix
+ * @param string $suffix
  * @return array
  */
 function hashids_encode_in_array(array $data, array $dosent_encode_keys = [], string $suffix = '_id'): array;
